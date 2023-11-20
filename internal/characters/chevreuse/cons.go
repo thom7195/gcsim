@@ -153,12 +153,12 @@ func (c *char) C2() combat.AttackCBFunc {
 func (c *char) OnC1Overload(args ...interface{}) bool {
 
 	if c.Core.F > c.c1Icd {
-		c.c1Icd = c.Core.F + (60 * 10)
 		atk := args[1].(*combat.AttackEvent)
 		atkCharIndex := atk.Info.ActorIndex
 
 		// chev can't trigger her own c1
-		if atk.Info.ActorIndex != c.Index {
+		if atk.Info.ActorIndex != c.Index && atk.Info.ActorIndex == c.Core.Player.Active() {
+			c.c1Icd = c.Core.F + (60 * 10)
 			olTriggerChar := c.Core.Player.Chars()[atkCharIndex]
 			olTriggerChar.AddEnergy("chev-c1", 6)
 		}
