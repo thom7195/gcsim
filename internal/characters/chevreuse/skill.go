@@ -130,10 +130,14 @@ func (c *char) skillHold() action.Info {
 	skillHealInterval := 2
 	c.Core.Tasks.Add(func() {
 		c.Core.Status.Add(skillKey, skillDur)
-		c.Core.Tasks.Add(c.startSkillHealing(), skillHealInterval*60)
 		c.Core.Tasks.Add(c.c6TeamHeal(), skillDur)
-	},
-		23)
+	}, 23)
+
+	if c.Core.Status.Duration(skillKey) == 0 {
+		c.Core.Tasks.Add(func() {
+			c.Core.Tasks.Add(c.startSkillHealing(), skillHealInterval*60)
+		}, 23)
+	}
 
 	c.Core.QueueAttack(
 		ai,
