@@ -77,6 +77,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/fischl"
 	_ "github.com/genshinsim/gcsim/internal/characters/freminet"
 	_ "github.com/genshinsim/gcsim/internal/characters/furina"
+	_ "github.com/genshinsim/gcsim/internal/characters/gaming"
 	_ "github.com/genshinsim/gcsim/internal/characters/ganyu"
 	_ "github.com/genshinsim/gcsim/internal/characters/gorou"
 	_ "github.com/genshinsim/gcsim/internal/characters/heizou"
