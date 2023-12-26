@@ -18,13 +18,12 @@ const (
 )
 
 func init() {
-	// E
-	skillFrames = frames.InitAbilSlice(90)
-	skillFrames[action.ActionHighPlunge] = 60
+	// E copied from kazuha
+	skillFrames = frames.InitAbilSlice(77)
+	skillFrames[action.ActionHighPlunge] = 24
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-
 	if p["ticks"] > 0 {
 		lionWalkBack = p["ticks"]
 	} else {
@@ -61,7 +60,7 @@ func (c *char) onPounceHit(a combat.AttackCB) {
 }
 
 func (c *char) spawnManchai(a combat.AttackCB) {
-	if c.StatusIsActive(burstKey) { //&& c.CurrentHPRatio() > 0.5 {
+	if c.StatusIsActive(burstKey) { // && c.CurrentHPRatio() > 0.5 {
 		if !c.StatusIsActive(lionKey) {
 			c.AddStatus(lionKey, lionWalkBack, false)
 			c.QueueCharTask(func() {

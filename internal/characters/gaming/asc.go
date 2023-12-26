@@ -1,7 +1,11 @@
 package gaming
 
 import (
+	"strings"
+
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -20,7 +24,7 @@ func (c *char) a1() {
 	c.QueueCharTask(func() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
-			Target:  c.Core.Player.Active(),
+			Target:  c.Index,
 			Message: "Horned Lion's Gilded Dance Healing",
 			Src:     c.MaxHP() * 0.3,
 			Bonus:   c.Stat(attributes.Heal),
@@ -51,18 +55,21 @@ func (c *char) a4() {
 		},
 	})
 
-	// DMG part
-	mPyroP := make([]float64, attributes.EndStatType)
-	mPyroP[attributes.PyroP] = 0.2
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("gaming-a4-pyro-dmg", -1),
-		AffectedStat: attributes.DendroP,
-		Amount: func() ([]float64, bool) {
-			active := c.Core.Player.ActiveChar()
-			if active.CurrentHPRatio() >= 0.5 {
-				return mPyroP, true
+	a4Buff := make([]float64, attributes.EndStatType)
+	a4Buff[attributes.PyroP] = 0.2
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("gaming-a4-dmg-bonus", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != attacks.AttackTagPlunge {
+				return nil, false
 			}
-			return nil, false
+			if c.CurrentHPRatio() < 0.5 {
+				return nil, false
+			}
+			if !strings.Contains(atk.Info.Abil, ePlungeKey) {
+				return nil, false
+			}
+			return a4Buff, true
 		},
 	})
 }

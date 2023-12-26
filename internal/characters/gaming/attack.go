@@ -1,6 +1,6 @@
 package gaming
 
-//TODO : Entirely stolen from chongyun
+// TODO : Entirely stolen from chongyun
 import (
 	"fmt"
 

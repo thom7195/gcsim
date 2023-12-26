@@ -10,19 +10,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-const ()
-
 var burstFrames []int
 
 const (
 	burstKey      = "gaming-wushou"
 	lionKey       = "gaming-manchai"
-	burstHitmark  = 44 //TODO
-	gamingBurstCd = 15 //seconds
+	burstHitmark  = 44 // TODO
+	gamingBurstCd = 15 // seconds
 )
 
 func init() {
-
 	// TODO : TAKEN FROM FREMINET
 	burstFrames = frames.InitAbilSlice(65)
 	burstFrames[action.ActionAttack] = 52

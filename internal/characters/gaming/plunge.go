@@ -14,6 +14,7 @@ import (
 
 // TODO: Kazuha Plunge Frames
 var plungeFrames []int
+var ePlungeKey = "Charmed CloudStrider"
 
 const (
 	plungePressHitmark = 36
@@ -21,12 +22,16 @@ const (
 )
 
 // TODO: missing plunge -> skill
+// TODO: Taken from Kazuha
 func init() {
 	// skill (press) -> high plunge -> x
 	plungeFrames = frames.InitAbilSlice(55) // max
 	plungeFrames[action.ActionDash] = 43
 	plungeFrames[action.ActionJump] = 50
 	plungeFrames[action.ActionSwap] = 50
+
+	// from video https://streamable.com/arcm3e is 73f from E -> P -> N1
+	plungeFrames[action.ActionAttack] = 50
 }
 
 func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
@@ -57,14 +62,14 @@ func (c *char) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	// aoe dmg
 	ai := combat.AttackInfo{
 		ActorIndex:     c.Index,
-		Abil:           "Charmed CloudStrider",
+		Abil:           ePlungeKey,
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeBlunt,
 		Element:        attributes.Pyro,
 		Durability:     25,
-		Mult:           skill[c.TalentLvlAttack()],
+		Mult:           skill[c.TalentLvlSkill()],
 		IgnoreInfusion: true,
 	}
 
