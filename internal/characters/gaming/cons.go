@@ -1,7 +1,11 @@
 package gaming
 
 import (
+	"strings"
+
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -65,26 +69,19 @@ func (c *char) c6() {
 		return
 	}
 
-	// cr and cd separately to avoid stack overflow due to NoStat attribute
-	mCR := make([]float64, attributes.EndStatType)
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("gaming-c6-cr", -1),
-		AffectedStat: attributes.CR,
-		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			mCR[attributes.CR] = 0.2
-			return mCR, true
-		},
-	})
-
-	mCD := make([]float64, attributes.EndStatType)
-	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("gaming-c6-cd", -1),
-		AffectedStat: attributes.CD,
-		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			mCD[attributes.CD] = 0.4
-			return mCD, true
+	c6Buff := make([]float64, attributes.EndStatType)
+	c6Buff[attributes.CR] = 0.2
+	c6Buff[attributes.CD] = 0.4
+	c.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("gaming-c6", -1),
+		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			if atk.Info.AttackTag != attacks.AttackTagPlunge {
+				return nil, false
+			}
+			if !strings.Contains(atk.Info.Abil, ePlungeKey) {
+				return nil, false
+			}
+			return c6Buff, true
 		},
 	})
 }
