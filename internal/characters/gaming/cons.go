@@ -12,6 +12,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const c2Key = "gaming-c2"
+const c4Key = "gaming-c4"
+const c4IcdKey = "gaming-c4"
+
 func (c *char) c1() {
 	if c.Base.Cons < 1 {
 		return
@@ -21,7 +25,8 @@ func (c *char) c1() {
 		Caller:  c.Index,
 		Target:  c.Core.Player.Active(),
 		Message: "Bringer of Blessing (C1)",
-		Src:     c.MaxHP() * 0.25,
+		Type:    player.HealTypePercent,
+		Src:     0.15,
 		Bonus:   c.Stat(attributes.Heal),
 	})
 }
@@ -39,29 +44,38 @@ func (c *char) c2() {
 			return false
 		}
 
-		if hi.Target != c.Core.Player.Active() && hi.Target != -1 {
+		if hi.Target != c.Index {
 			return false
 		}
 
-		c2M := make([]float64, attributes.EndStatType)
-		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("gaming-c2", 5*60),
-			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				c2M[attributes.ATKP] = 0.2
-				return c2M, true
-			},
-		})
+		c.AddStatus(c2Key, 5*60, true)
 
 		return false
-	}, "gaming-c2")
+	}, c2Key+"-onheal")
+
+	c2buff := make([]float64, attributes.EndStatType)
+	c2buff[attributes.ATKP] = 0.2
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(c2Key+"-atk", 5*60),
+		AffectedStat: attributes.ATKP,
+		Amount: func() ([]float64, bool) {
+			if !c.StatusIsActive(c2Key) {
+				return nil, false
+			}
+			return c2buff, true
+		},
+	})
 }
 
 func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
 	}
-	c.AddEnergy("gaming-c4", 2)
+	if c.StatusIsActive(c4IcdKey) {
+		return
+	}
+	c.AddStatus(c4IcdKey, 0.2*60, true)
+	c.AddEnergy(c4Key, 2)
 }
 
 func (c *char) c6() {

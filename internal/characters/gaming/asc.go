@@ -11,6 +11,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const a1key = "gaming-a1-icd"
+
 /*
 For 1s after hitting an opponent with Bestial Ascent's Plunging Attack: Charmed Cloudstrider,
 
@@ -20,13 +22,17 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-
+	if c.StatusIsActive(a1key) {
+		return
+	}
+	c.AddStatus(a1key, 60, true)
 	c.QueueCharTask(func() {
 		c.Core.Player.Heal(player.HealInfo{
 			Caller:  c.Index,
 			Target:  c.Index,
-			Message: "Horned Lion's Gilded Dance Healing",
-			Src:     c.MaxHP() * 0.3,
+			Message: "Dance of Amity",
+			Type:    player.HealTypePercent,
+			Src:     0.06,
 			Bonus:   c.Stat(attributes.Heal),
 		})
 	}, 60)
@@ -34,7 +40,8 @@ func (c *char) a1() {
 
 /*
 When Gaming has less than 50% HP, he will receive a 20% Incoming Healing Bonus.
-When Gaming has 50% HP or more, he will gain a 20% Pyro DMG Bonus.
+When Gaming has 50% HP or more, Plunging Attack: Charmed Cloudstrider will deal 20% more DMG.
+TODO: Confirm this is 20% DMG and not a 1.2x multiplier to MVs
 */
 func (c *char) a4() {
 	if c.Base.Ascension < 4 {

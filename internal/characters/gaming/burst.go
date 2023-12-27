@@ -62,9 +62,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.Core.Player.Heal(player.HealInfo{
 		Caller:  c.Index,
-		Target:  c.Core.Player.Active(),
+		Target:  c.Index,
 		Message: "Horned Lion's Gilded Dance Healing",
-		Src:     c.MaxHP() * 0.3,
+		Type:    player.HealTypePercent,
+		Src:     0.3,
 		Bonus:   c.Stat(attributes.Heal),
 	})
 
