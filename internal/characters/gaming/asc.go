@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a1key = "gaming-a1-icd"
+const a1key = "gaming-a1"
 
 /*
 For 1s after hitting an opponent with Bestial Ascent's Plunging Attack: Charmed Cloudstrider,
@@ -22,20 +22,23 @@ func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	if c.StatusIsActive(a1key) {
+	c.AddStatus(a1key, 0.8*60, true)
+	c.QueueCharTask(c.a1Heal, 0.2*60)
+}
+
+func (c *char) a1Heal() {
+	if !c.StatusIsActive(a1key) {
 		return
 	}
-	c.AddStatus(a1key, 60, true)
-	c.QueueCharTask(func() {
-		c.Core.Player.Heal(player.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
-			Message: "Dance of Amity",
-			Type:    player.HealTypePercent,
-			Src:     0.06,
-			Bonus:   c.Stat(attributes.Heal),
-		})
-	}, 60)
+	c.Core.Player.Heal(player.HealInfo{
+		Caller:  c.Index,
+		Target:  c.Index,
+		Message: "Dance of Amity (A1)",
+		Type:    player.HealTypePercent,
+		Src:     0.015,
+		Bonus:   c.Stat(attributes.Heal),
+	})
+	c.QueueCharTask(c.a1Heal, 0.2*60)
 }
 
 /*

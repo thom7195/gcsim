@@ -12,7 +12,7 @@ var skillFrames []int
 var lionWalkBack int
 
 const (
-	skillHitmark  = 35
+	skillHitmark  = 20
 	gamingICD     = 3   // seconds
 	gamingSkillCD = 360 // frames
 )
@@ -59,8 +59,8 @@ func (c *char) onPounceHit(a combat.AttackCB) {
 	c.spawnManchai(a)
 }
 
-func (c *char) spawnManchai(a combat.AttackCB) {
-	if c.StatusIsActive(burstKey) { // && c.CurrentHPRatio() > 0.5 {
+func (c *char) spawnManchai(_ combat.AttackCB) {
+	if c.StatusIsActive(burstKey) && c.CurrentHPRatio() > 0.5 {
 		if !c.StatusIsActive(lionKey) {
 			c.AddStatus(lionKey, lionWalkBack, false)
 			c.QueueCharTask(func() {
