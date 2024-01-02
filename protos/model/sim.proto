@@ -49,11 +49,10 @@ message SimulatorSettings {
     bool damage_mode = 2 [json_name="damage_mode"];
     bool enable_hitlag = 3 [json_name="enable_hitlag"];
     bool def_halt = 4 [json_name="def_halt"];
-    bool ignore_burst_energy = 5 [json_name="ignore_burst_energy"];
-    uint32 number_of_workers = 6 [json_name="number_of_workers"];
-    uint32 iterations = 7 [json_name="iterations"];
-    Delays delays = 8 [json_name="delays"];
-
+    uint32 number_of_workers = 5 [json_name="number_of_workers"];
+    uint32 iterations = 6 [json_name="iterations"];
+    Delays delays = 7 [json_name="delays"];
+    bool ignore_burst_energy = 8 [json_name="ignore_burst_energy"];
 }
 
 message Delays {

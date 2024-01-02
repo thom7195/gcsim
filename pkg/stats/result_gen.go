@@ -676,6 +676,11 @@ func (z *CharacterResult) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
+		case "expected_crit_dmg":
+			z.ExpectedCritDmg, err = dc.ReadFloat64()
+			if err != nil {
+				return
+			}
 		default:
 			err = dc.Skip()
 			if err != nil {
@@ -688,9 +693,9 @@ func (z *CharacterResult) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *CharacterResult) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 14
+	// map header, size 15
 	// write "name"
-	err = en.Append(0x8e, 0xa4, 0x6e, 0x61, 0x6d, 0x65)
+	err = en.Append(0x8f, 0xa4, 0x6e, 0x61, 0x6d, 0x65)
 	if err != nil {
 		return err
 	}
@@ -917,15 +922,24 @@ func (z *CharacterResult) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
+	// write "expected_crit_dmg"
+	err = en.Append(0xb1, 0x65, 0x78, 0x70, 0x65, 0x63, 0x74, 0x65, 0x64, 0x5f, 0x63, 0x72, 0x69, 0x74, 0x5f, 0x64, 0x6d, 0x67)
+	if err != nil {
+		return err
+	}
+	err = en.WriteFloat64(z.ExpectedCritDmg)
+	if err != nil {
+		return
+	}
 	return
 }
 
 // MarshalMsg implements msgp.Marshaler
 func (z *CharacterResult) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 14
+	// map header, size 15
 	// string "name"
-	o = append(o, 0x8e, 0xa4, 0x6e, 0x61, 0x6d, 0x65)
+	o = append(o, 0x8f, 0xa4, 0x6e, 0x61, 0x6d, 0x65)
 	o = msgp.AppendString(o, z.Name)
 	// string "damage_events"
 	o = append(o, 0xad, 0x64, 0x61, 0x6d, 0x61, 0x67, 0x65, 0x5f, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73)
@@ -1023,6 +1037,9 @@ func (z *CharacterResult) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "weight_er"
 	o = append(o, 0xa9, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x65, 0x72)
 	o = msgp.AppendFloat64(o, z.WeightedER)
+	// string "expected_crit_dmg"
+	o = append(o, 0xb1, 0x65, 0x78, 0x70, 0x65, 0x63, 0x74, 0x65, 0x64, 0x5f, 0x63, 0x72, 0x69, 0x74, 0x5f, 0x64, 0x6d, 0x67)
+	o = msgp.AppendFloat64(o, z.ExpectedCritDmg)
 	return
 }
 
@@ -1280,6 +1297,11 @@ func (z *CharacterResult) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
+		case "expected_crit_dmg":
+			z.ExpectedCritDmg, bts, err = msgp.ReadFloat64Bytes(bts)
+			if err != nil {
+				return
+			}
 		default:
 			bts, err = msgp.Skip(bts)
 			if err != nil {
@@ -1317,7 +1339,7 @@ func (z *CharacterResult) Msgsize() (s int) {
 	for zpks := range z.FailedActions {
 		s += 1 + 6 + msgp.IntSize + 4 + msgp.IntSize + 7 + msgp.StringPrefixSize + len(z.FailedActions[zpks].Reason)
 	}
-	s += 14 + msgp.ArrayHeaderSize + (len(z.EnergyStatus) * (msgp.Float64Size)) + 14 + msgp.ArrayHeaderSize + (len(z.HealthStatus) * (msgp.Float64Size)) + 26 + msgp.ArrayHeaderSize + (len(z.DamageCumulativeContrib) * (msgp.Float64Size)) + 12 + msgp.IntSize + 13 + msgp.Float64Size + 10 + msgp.Float64Size + 10 + msgp.Float64Size
+	s += 14 + msgp.ArrayHeaderSize + (len(z.EnergyStatus) * (msgp.Float64Size)) + 14 + msgp.ArrayHeaderSize + (len(z.HealthStatus) * (msgp.Float64Size)) + 26 + msgp.ArrayHeaderSize + (len(z.DamageCumulativeContrib) * (msgp.Float64Size)) + 12 + msgp.IntSize + 13 + msgp.Float64Size + 10 + msgp.Float64Size + 10 + msgp.Float64Size + 18 + msgp.Float64Size
 	return
 }
 

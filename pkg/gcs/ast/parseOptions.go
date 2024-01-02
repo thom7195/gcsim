@@ -100,7 +100,6 @@ func parseOptions(p *Parser) (parseFn, error) {
 					}
 				}
 			case "ignore_burst_energy":
-				// Current there is no method to easily show this data to the user so it's removed for now
 				n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
 				p.res.Settings.IgnoreBurstEnergy = n.Val == TrueVal
 			default:

@@ -3852,9 +3852,6 @@ export namespace model {
         /** SimulatorSettings def_halt */
         def_halt?: (boolean|null);
 
-        /** SimulatorSettings ignore_burst_energy */
-        ignore_burst_energy?: (boolean|null);
-
         /** SimulatorSettings number_of_workers */
         number_of_workers?: (number|null);
 
@@ -3863,6 +3860,9 @@ export namespace model {
 
         /** SimulatorSettings delays */
         delays?: (model.IDelays|null);
+
+        /** SimulatorSettings ignore_burst_energy */
+        ignore_burst_energy?: (boolean|null);
     }
 
     /** Represents a SimulatorSettings. */
@@ -3886,9 +3886,6 @@ export namespace model {
         /** SimulatorSettings def_halt. */
         public def_halt: boolean;
 
-        /** SimulatorSettings ignore_burst_energy. */
-        public ignore_burst_energy: boolean;
-
         /** SimulatorSettings number_of_workers. */
         public number_of_workers: number;
 
@@ -3897,6 +3894,9 @@ export namespace model {
 
         /** SimulatorSettings delays. */
         public delays?: (model.IDelays|null);
+
+        /** SimulatorSettings ignore_burst_energy. */
+        public ignore_burst_energy: boolean;
 
         /**
          * Gets the default type url for SimulatorSettings

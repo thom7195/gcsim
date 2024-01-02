@@ -35,7 +35,6 @@
     ],
     "freminet": [],
     "furina": [
-        "furina",
         "furinadefontaine"
     ],
     "ganyu": [],
@@ -78,6 +77,10 @@
     "nahida": [
         "kusanali",
         "lesserlordkusanali"
+    ],
+    "navia": [
+        "navia",
+        "demoiselle"
     ],
     "neuvillette": [
         "neuv",

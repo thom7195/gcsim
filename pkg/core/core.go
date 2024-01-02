@@ -43,7 +43,7 @@ type Flags struct {
 	DamageMode        bool // for hp mode
 	DefHalt           bool // for hitlag
 	EnableHitlag      bool // hitlag enabled
-	IgnoreBurstEnergy bool
+	IgnoreBurstEnergy bool // for ignoring energy when using burst
 	ExpectedCritDmg   bool
 	Custom            map[string]int
 }
