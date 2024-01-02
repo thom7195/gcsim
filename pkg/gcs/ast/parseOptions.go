@@ -6,7 +6,7 @@ import (
 )
 
 func parseOptions(p *Parser) (parseFn, error) {
-	// option iter=1000 duration=1000 worker=50 debug=true er_calc=true damage_mode=true
+	// option iter=1000 duration=1000 worker=50 debug=true ignore_burst_energy=true damage_mode=true
 	var err error
 
 	// options debug=true iteration=5000 duration=90 workers=24;
@@ -99,10 +99,10 @@ func parseOptions(p *Parser) (parseFn, error) {
 						return nil, fmt.Errorf("ln%v: unrecognized option for frame_defaults specified: %v", n.line, n.Val)
 					}
 				}
-			case "er_calc":
+			case "ignore_burst_energy":
 				// Current there is no method to easily show this data to the user so it's removed for now
-				// n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
-				// p.res.Settings.ErCalc = n.Val == TrueVal
+				n, err = p.acceptSeqReturnLast(itemAssign, itemBool)
+				p.res.Settings.IgnoreBurstEnergy = n.Val == TrueVal
 			default:
 				return nil, fmt.Errorf("ln%v: unrecognized option specified: %v", n.line, n.Val)
 			}

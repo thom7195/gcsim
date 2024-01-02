@@ -21,7 +21,7 @@ type buffer struct {
 }
 
 func NewStat(core *core.Core) (stats.Collector, error) {
-	if !core.Flags.ErCalc {
+	if !core.Flags.IgnoreBurstEnergy {
 		out := buffer{}
 		return &out, nil
 	}
@@ -90,7 +90,7 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 }
 
 func (b buffer) Flush(core *core.Core, result *stats.Result) {
-	if !core.Flags.ErCalc {
+	if !core.Flags.IgnoreBurstEnergy {
 		return
 	}
 

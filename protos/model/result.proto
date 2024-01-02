@@ -117,9 +117,9 @@ message SimulationStatistics {
   // target aura uptime
   repeated SourceStats target_aura_uptime = 29 [json_name="target_aura_uptime"];
 
-  // er values from er_calc mode
-  repeated OverviewStats er_needed = 31 [json_name="er_needed"];
-  repeated OverviewStats weighted_er = 32 [json_name="weighted_er"];
+  // er values from ignore_burst_energy mode
+  repeated ArrayStats er_needed = 31 [json_name="er_needed"];
+  repeated ArrayStats weighted_er = 32 [json_name="weighted_er"];
 
   // DPS using expected value of crit for substat optimizer
   DescriptiveStats expected_dps = 33 [json_name="expected_dps"];
@@ -142,6 +142,10 @@ message OverviewStats {
   optional double Q3 = 7 [json_name="q3"];
 
   repeated uint32 hist = 8 [json_name="histogram"];
+}
+
+message ArrayStats {
+  repeated double array = 5 [json_name="array"];
 }
 
 message DescriptiveStats {

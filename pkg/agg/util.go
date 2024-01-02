@@ -63,6 +63,17 @@ func ToOverviewStats(input *stats.Sample) *model.OverviewStats {
 	return &out
 }
 
+func ToArrayStats(input *stats.Sample) *model.ArrayStats {
+	input.Sorted = false
+	input.Sort()
+
+	out := model.ArrayStats{
+		Array: input.Xs,
+	}
+
+	return &out
+}
+
 // taken from go-moremath. Need to reimplement for proto type compatibility
 type LinearHist struct {
 	min, max  float64

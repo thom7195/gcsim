@@ -46,12 +46,12 @@ func (b *buffer) Add(result stats.Result) {
 }
 
 func (b *buffer) Flush(result *model.SimulationStatistics) {
-	result.ErNeeded = make([]*model.OverviewStats, len(b.erNeeded))
-	result.WeightedEr = make([]*model.OverviewStats, len(b.weightedER))
+	result.ErNeeded = make([]*model.ArrayStats, len(b.erNeeded))
+	result.WeightedEr = make([]*model.ArrayStats, len(b.weightedER))
 	for i, c := range b.erNeeded {
-		result.ErNeeded[i] = agg.ToOverviewStats(c)
+		result.ErNeeded[i] = agg.ToArrayStats(c)
 	}
 	for i, c := range b.weightedER {
-		result.WeightedEr[i] = agg.ToOverviewStats(c)
+		result.WeightedEr[i] = agg.ToArrayStats(c)
 	}
 }

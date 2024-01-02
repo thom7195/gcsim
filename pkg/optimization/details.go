@@ -53,7 +53,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 		charDebug []string
 	)
 	origIter := stats.simcfg.Settings.Iterations
-	stats.simcfg.Settings.ErCalc = true
+	stats.simcfg.Settings.IgnoreBurstEnergy = true
 	stats.simcfg.Settings.ExpectedCritDmg = true
 	stats.simcfg.Settings.Iterations = 25
 	stats.simcfg.Characters = stats.charProfilesCopy
@@ -62,7 +62,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonERSubstats() []string {
 		charDebug = stats.optimizeNonErSubstatsForChar(idxChar, stats.charProfilesCopy[idxChar])
 		opDebug = append(opDebug, charDebug...)
 	}
-	stats.simcfg.Settings.ErCalc = false
+	stats.simcfg.Settings.IgnoreBurstEnergy = false
 	stats.simcfg.Settings.ExpectedCritDmg = false
 	stats.simcfg.Settings.Iterations = origIter
 	return opDebug
@@ -119,10 +119,10 @@ func (stats *SubstatOptimizerDetails) optimizeERAndDMGSubstatsForChar(
 	// fmt.Println(char.Base.Key.Pretty(), "has", totalSubs, "total liquid substats")
 	for stats.charMaxExtraERSubs[idxChar] > 0.0 && stats.charSubstatFinal[idxChar][attributes.ER] < stats.charSubstatLimits[idxChar][attributes.ER] {
 		origIter := stats.simcfg.Settings.Iterations
-		stats.simcfg.Settings.ErCalc = true
+		stats.simcfg.Settings.IgnoreBurstEnergy = true
 		stats.simcfg.Settings.Iterations = 25
 		substatGradients := stats.calculateSubstatGradientsForChar(idxChar, relevantSubstats, -1)
-		stats.simcfg.Settings.ErCalc = false
+		stats.simcfg.Settings.IgnoreBurstEnergy = false
 		stats.simcfg.Settings.Iterations = 350
 		erGainGradient := stats.calculateSubstatGradientsForChar(idxChar, []attributes.Stat{attributes.ER}, 1)
 		stats.simcfg.Settings.Iterations = origIter
@@ -273,7 +273,7 @@ func (stats *SubstatOptimizerDetails) getNonErSubstatsToOptimizeForChar(char inf
 }
 
 // Find optimal ER cutoffs for each character
-// We use the er_calc mode to determine how much ER is needed for each character to successfully do the
+// We use the ignore_burst_energy mode to determine how much ER is needed for each character to successfully do the
 // multiple rotations 75% of the time.
 // TODO: Overall it seems like 75% of the time is still bad for the DPS, maybe go through the results
 // aggregator and add a p90 to reduce the number of times the 350 iterations of the ER vs DMG step needs
@@ -314,7 +314,7 @@ func clamp[T Ordered](min, val, max T) T {
 // TODO: Allow the user to specify the initial ER bias? Setting the bias to positive values will mean that the ER vs DMG step runs longer
 // But the ER vs DMG step should be more accurate than this function
 func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
-	stats.simcfg.Settings.ErCalc = true
+	stats.simcfg.Settings.IgnoreBurstEnergy = true
 	// characters start at maximum ER
 	stats.simcfg.Characters = stats.charProfilesERBaseline
 	result, _ := simulator.RunWithConfig(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, time.Now())
@@ -323,26 +323,27 @@ func (stats *SubstatOptimizerDetails) findOptimalERforChars() {
 		// fmt.Printf("Found character %s needs %.2f ER\n", stats.charProfilesERBaseline[idxChar].Base.Key.String(), *result.Statistics.ErNeeded[idxChar].Q3)
 
 		// erDiff is the amount of excess ER we have
-		erDiff := *result.Statistics.WeightedEr[idxChar].Q1 - *result.Statistics.ErNeeded[idxChar].Q3
+		length := len(result.Statistics.WeightedEr[idxChar].Array)
+		erDiff := result.Statistics.WeightedEr[idxChar].Array[int(float64(length)*0.2)] - result.Statistics.ErNeeded[idxChar].Array[int(float64(length)*93)]
 
 		// the bias is how much to "round".
 		// -0.5 bias is equivalent to flooring (guaruntees that the ER will be enough, even if
 		// 		the req was 1.2205 and 4 subs was 1.2204, we will get 1.1653 ER)
 		// +0.5 bias is equivalent to ceil
 		// maybe bias should be determined relative to DPS% of team?
-		bias := -0.33
+		bias := 0.0
 
 		// find the closest whole count of ER subs
 		erStack := int(math.Round(erDiff/stats.substatValues[attributes.ER] + bias))
 		erStack = clamp[int](0, erStack, stats.charSubstatFinal[idxChar][attributes.ER])
 		stats.charMaxExtraERSubs[idxChar] =
-			float64(erStack) - (*result.Statistics.WeightedEr[idxChar].Min-*result.Statistics.ErNeeded[idxChar].Max)/
+			float64(erStack) - (result.Statistics.WeightedEr[idxChar].Array[0]-result.Statistics.ErNeeded[idxChar].Array[length-1])/
 				stats.substatValues[attributes.ER]
 		stats.charProfilesCopy[idxChar] = stats.charProfilesERBaseline[idxChar].Clone()
 		stats.charSubstatFinal[idxChar][attributes.ER] -= erStack
 		stats.charProfilesCopy[idxChar].Stats[attributes.ER] -= float64(erStack) * stats.substatValues[attributes.ER] * stats.charSubstatRarityMod[idxChar]
 	}
-	stats.simcfg.Settings.ErCalc = false
+	stats.simcfg.Settings.IgnoreBurstEnergy = false
 }
 
 func (stats *SubstatOptimizerDetails) setInitialSubstats(fixedSubstatCount int) {

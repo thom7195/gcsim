@@ -10,7 +10,7 @@ func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action
 
 	switch a {
 	case action.ActionBurst:
-		if c.Energy != c.EnergyMax && !c.Core.Flags.ErCalc {
+		if c.Energy != c.EnergyMax && !c.Core.Flags.IgnoreBurstEnergy {
 			return false, action.InsufficientEnergy
 		}
 		if c.AvailableCDCharge[a] <= 0 {

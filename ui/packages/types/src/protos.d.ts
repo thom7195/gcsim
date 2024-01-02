@@ -2836,10 +2836,16 @@ export namespace model {
         target_aura_uptime?: (model.ISourceStats[]|null);
 
         /** SimulationStatistics er_needed */
-        er_needed?: (model.IOverviewStats[]|null);
+        er_needed?: (model.IArrayStats[]|null);
 
         /** SimulationStatistics weighted_er */
-        weighted_er?: (model.IOverviewStats[]|null);
+        weighted_er?: (model.IArrayStats[]|null);
+
+        /** SimulationStatistics expected_dps */
+        expected_dps?: (model.IDescriptiveStats|null);
+
+        /** SimulationStatistics character_expected_dps */
+        character_expected_dps?: (model.IDescriptiveStats[]|null);
     }
 
     /** Represents a SimulationStatistics. */
@@ -2942,10 +2948,16 @@ export namespace model {
         public target_aura_uptime: model.ISourceStats[];
 
         /** SimulationStatistics er_needed. */
-        public er_needed: model.IOverviewStats[];
+        public er_needed: model.IArrayStats[];
 
         /** SimulationStatistics weighted_er. */
-        public weighted_er: model.IOverviewStats[];
+        public weighted_er: model.IArrayStats[];
+
+        /** SimulationStatistics expected_dps. */
+        public expected_dps?: (model.IDescriptiveStats|null);
+
+        /** SimulationStatistics character_expected_dps. */
+        public character_expected_dps: model.IDescriptiveStats[];
 
         /**
          * Gets the default type url for SimulationStatistics
@@ -3072,6 +3084,33 @@ export namespace model {
 
         /**
          * Gets the default type url for OverviewStats
+         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns The default type url
+         */
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    /** Properties of an ArrayStats. */
+    interface IArrayStats {
+
+        /** ArrayStats array */
+        array?: (number[]|null);
+    }
+
+    /** Represents an ArrayStats. */
+    class ArrayStats implements IArrayStats {
+
+        /**
+         * Constructs a new ArrayStats.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: model.IArrayStats);
+
+        /** ArrayStats array. */
+        public array: number[];
+
+        /**
+         * Gets the default type url for ArrayStats
          * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns The default type url
          */
@@ -3813,8 +3852,8 @@ export namespace model {
         /** SimulatorSettings def_halt */
         def_halt?: (boolean|null);
 
-        /** SimulatorSettings er_calc */
-        er_calc?: (boolean|null);
+        /** SimulatorSettings ignore_burst_energy */
+        ignore_burst_energy?: (boolean|null);
 
         /** SimulatorSettings number_of_workers */
         number_of_workers?: (number|null);
@@ -3847,8 +3886,8 @@ export namespace model {
         /** SimulatorSettings def_halt. */
         public def_halt: boolean;
 
-        /** SimulatorSettings er_calc. */
-        public er_calc: boolean;
+        /** SimulatorSettings ignore_burst_energy. */
+        public ignore_burst_energy: boolean;
 
         /** SimulatorSettings number_of_workers. */
         public number_of_workers: number;
