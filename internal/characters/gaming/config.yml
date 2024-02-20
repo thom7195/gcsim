@@ -16,10 +16,10 @@ skill_data_mapping:
         lowplunge:
             - 9 # Low Plunge DMG|{param9:P}
         highplunge:
-            - 7 # High Plunge DMG|{param10:P}
+            - 10 # High Plunge DMG|{param10:P}
     skill:
-        cloudstrider:
+        skill:
             - 0 # Skill DMG|{param1:P}
     burst:
-        smash:
+        burst:
             - 0 # Skill DMG|{param0:P}
