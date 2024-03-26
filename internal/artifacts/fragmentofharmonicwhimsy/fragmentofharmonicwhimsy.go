@@ -53,18 +53,21 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	}
 
 	m := make([]float64, attributes.EndStatType)
+	m[attributes.DmgP] = 0.18
 	c.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
-		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(fmt.Sprintf("harmonic-whimny-%v-stack", s.stacks+1), 6*60),
-			Amount: func() ([]float64, bool) {
-				return m, true
-			},
-		})
-		s.stacks = (s.stacks + 1) % 3
-		c.Log.NewEvent("Harmonic Whimsy stack gained", glog.LogArtifactEvent, char.Index).Write("stacks", s.stacks)
-
+		amount := args[1].(float64)
+		if amount != 0 {
+			char.AddStatMod(character.StatMod{
+				Base: modifier.NewBaseWithHitlag(fmt.Sprintf("harmonic-whimny-%v-stack", s.stacks+1), 6*60),
+				Amount: func() ([]float64, bool) {
+					return m, true
+				},
+			})
+			s.stacks = (s.stacks + 1) % 3
+			c.Log.NewEvent("Harmonic Whimsy stack gained", glog.LogArtifactEvent, char.Index).Write("stacks", s.stacks)
+		}
 		return false
-	}, "Stack-on-hpdebt-changed")
+	}, "Checking for HPDebt")
 
 	return &s, nil
 }
